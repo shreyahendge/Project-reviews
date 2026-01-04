@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Project Reviews</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6ff;
+  text-align: center;
+  padding: 20px;
+}
+
+input, textarea {
+  width: 250px;
+  padding: 8px;
+  margin: 6px;
+}
+
+.star {
+  font-size: 30px;
+  cursor: pointer;
+  color: gray;
+}
+
+button {
+  padding: 8px 15px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.review {
+  background: white;
+  margin: 10px auto;
+  padding: 10px;
+  width: 280px;
+  border-radius: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>★ Project Reviews ★</h1>
+
+<input id="name" placeholder="Your name"><br>
+
+<textarea id="review" placeholder="Write your review"></textarea><br>
+
+<div>
+  <span class="star" onclick="rate(1)">&#9733;</span>
+  <span class="star" onclick="rate(2)">&#9733;</span>
+  <span class="star" onclick="rate(3)">&#9733;</span>
+  <span class="star" onclick="rate(4)">&#9733;</span>
+  <span class="star" onclick="rate(5)">&#9733;</span>
+</div>
+
+<button onclick="submitReview()">Submit</button>
+<br>
+<button onclick="clearReviews()">Clear Reviews</button>
+
+<h2>Reviews</h2>
+<div id="reviews"></div>
+
+<script>
+let selectedRating = 0;
+
+// Load saved reviews
+window.onload = function () {
+  let saved = localStorage.getItem("reviews");
+  if (saved) {
+    document.getElementById("reviews").innerHTML = saved;
+  }
+};
+
+function rate(num) {
+  selectedRating = num;
+  let stars = document.getElementsByClassName("star");
+  for (let i = 0; i < stars.length; i++) {
+    stars[i].style.color = i < num ? "gold" : "gray";
+  }
+}
+
+function submitReview() {
+  let name = document.getElementById("name").value;
+  let review = document.getElementById("review").value;
+
+  if (name === "" || review === "" || selectedRating === 0) {
+    alert("Fill everything and select stars 😭");
+    return;
+  }
+
+  let box = document.createElement("div");
+  box.className = "review";
+  box.innerHTML =
+    "<b>" + name + "</b><br>" +
+    "<span style='color:gold'>" + "&#9733;".repeat(selectedRating) + "</span><br>" +
+    review;
+
+  document.getElementById("reviews").appendChild(box);
+
+  // Save reviews
+  localStorage.setItem(
+    "reviews",
+    document.getElementById("reviews").innerHTML
+  );
+
+  document.getElementById("name").value = "";
+  document.getElementById("review").value = "";
+  selectedRating = 0;
+  rate(0);
+}
+
+function clearReviews() {
+  localStorage.removeItem("reviews");
+  document.getElementById("reviews").innerHTML = "";
+}
+</script>
+
+</body>
+</html>
